@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hadia's Super Surprise! 💖</title>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@400&display=swap" rel="stylesheet">
+    <style>
+        :root { --pink: #ff4d6d; --dark-pink: #c9184a; --bg: #fff0f3; }
+        body { margin: 0; font-family: 'Poppins', sans-serif; background: var(--bg); text-align: center; color: #590d22; overflow-x: hidden; }
+        .screen { min-height: 100vh; display: none; flex-direction: column; align-items: center; justify-content: center; padding: 20px; box-sizing: border-box; position: relative; }
+        #screen1 { display: flex; }
+        h1 { font-family: 'Dancing Script', cursive; font-size: 2.5rem; color: var(--dark-pink); }
+        .btn { background: var(--pink); color: white; border: none; padding: 15px 30px; border-radius: 50px; cursor: pointer; margin-top: 20px; box-shadow: 0 4px 15px rgba(255,77,109,0.3); }
+
+        /* Level 3 Style */
+        .star { font-size: 40px; cursor: pointer; margin: 10px; display: inline-block; animation: float 2s infinite ease-in-out; }
+        @keyframes float { 50% { transform: translateY(-10px); } }
+        #memory-box { font-weight: bold; color: var(--dark-pink); margin: 20px; min-height: 24px; font-style: italic; }
+
+        /* Level 4: Scratch Card Style */
+        #scratch-container { position: relative; width: 300px; height: 150px; background: white; border: 2px solid var(--pink); margin: 20px auto; border-radius: 10px; overflow: hidden; }
+        #scratch-canvas { position: absolute; top: 0; left: 0; touch-action: none; cursor: crosshair; }
+        .hidden-msg { display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; font-weight: bold; padding: 10px; box-sizing: border-box; color: var(--dark-pink); }
+
+        /* Level 6: Scroll Style */
+        .credits-box { height: 200px; overflow: hidden; position: relative; width: 100%; max-width: 300px; background: white; border-radius: 10px; padding: 10px; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .credits-content { position: absolute; width: 100%; animation: scrollUp 15s linear forwards; }
+        @keyframes scrollUp { from { top: 100%; } to { top: -150%; } }
+
+        /* Hearts/Balloons for Finale */
+        .flying-element {
+            position: absolute;
+            bottom: -50px;
+            animation: flyUp 5s linear forwards;
+            opacity: 0;
+            font-size: 30px;
+        }
+        @keyframes flyUp {
+            0% { transform: translateY(0) rotate(0deg); opacity: 0; }
+            20% { opacity: 1; }
+            100% { transform: translateY(-100vh) rotate(720deg); opacity: 0; }
+        }
+
+        #final-message {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(255, 255, 255, 0.95);
+            color: var(--dark-pink);
+            font-family: 'Dancing Script', cursive;
+            font-size: 2.8rem;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            text-shadow: 2px 2px 5px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+
+    <audio id="bgMusic" loop>
+        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-16.mp3" type="audio/mpeg"> Your browser does not support the audio element.
+    </audio>
+
+    <section id="screen1" class="screen">
+        <h1>Happy Birthday Hadia! 💖</h1>
+        <button class="btn" onclick="startExperience()">Tap for a Surprise!</button>
+    </section>
+
+    <section id="screen2" class="screen">
+        <h2>Level 2: The Cake 🎂</h2>
+        <div style="font-size:100px; cursor:pointer;" onclick="nextScreen(3)">🎂</div>
+        <p>Tap the cake to cut it!</p>
+    </section>
+
+    <section id="screen3" class="screen">
+        <h2>Level 3: Memory Lane 🌟</h2>
+        <div id="memory-box">Tap a star to reveal a memory!</div>
+        <div>
+            <span class="star" onclick="showMem('Thanks for being in my life! ✨')">⭐</span>
+            <span class="star" onclick="showMem('It\'s your day, my bestie! 🎉')">⭐</span>
+        </div>
+        <button class="btn" onclick="nextScreen(4)">Go to Level 4</button>
+    </section>
+
+    <section id="screen4" class="screen">
+        <h2>Level 4: Scratch Card 🎁</h2>
+        <p>Rub your finger to reveal your gift!</p>
+        <div id="scratch-container">
+            <div class="hidden-msg">Gift enjoy karoooo! 🥳</div>
+            <canvas id="scratch-canvas" width="300" height="150"></canvas>
+        </div>
+        <button class="btn" onclick="nextScreen(6)">Next Level</button> </section>
+
+    <section id="screen6" class="screen">
+        <h2>Level 6: The Grand Finale 📜</h2>
+        <div class="credits-box">
+            <div class="credits-content">
+                <p>My Dearest Hadia,</p>
+                <p>You are the most trusted person in my life.</p>
+                <p>Thanks for being there;</p>
+                <p>in this world of fakes, it's very hard to find someone true like you.</p>
+                <p>May your special day be filled with joy and happiness.</p>
+                <p>I wish you all the best in life.</p>
+                <p>Happy Birthday!</p>
+            </div>
+        </div>
+        <button class="btn" onclick="triggerFinale()">Click for a Thank You Hug! 🤗</button>
+    </section>
+
+    <div id="final-message">
+        Created by Maham Nawaz for Hadia ❤️
+    </div>
+
+    <script>
+        const bgMusic = document.getElementById('bgMusic');
+
+        function startExperience() {
+            bgMusic.play().catch(e => console.log("Music auto-play blocked: ", e)); // Autoplay ke masle ke liye
+            nextScreen(2);
+        }
+
+        function nextScreen(num) {
+            document.querySelectorAll('.screen').forEach(s => s.style.display = 'none');
+            document.getElementById('screen' + num).style.display = 'flex';
+            if(num === 4) initScratch(); // Level 4 ke liye scratch card initialize karein
+        }
+
+        function showMem(txt) {
+            document.getElementById('memory-box').innerText = txt;
+        }
+
+        function initScratch() {
+            const canvas = document.getElementById('scratch-canvas');
+            const ctx = canvas.getContext('2d');
+            ctx.fillStyle = '#C0C0C0'; // Silver color for scratch
+            ctx.fillRect(0, 0, 300, 150);
+            ctx.globalCompositeOperation = 'destination-out'; // Ye erase karega
+
+            const scratch = (e) => {
+                const rect = canvas.getBoundingClientRect();
+                const x = (e.clientX || e.touches[0].clientX) - rect.left;
+                const y = (e.clientY || e.touches[0].clientY) - rect.top;
+                ctx.beginPath();
+                ctx.arc(x, y, 20, 0, Math.PI * 2); // Bigger scratch radius
+                ctx.fill();
+            };
+
+            canvas.addEventListener('mousemove', scratch);
+            canvas.addEventListener('touchmove', scratch);
+        }
+
+        function triggerFinale() {
+            for(let i=0; i<30; i++) {
+                createFlyingElement('❤️'); // Hearts
+                createFlyingElement('🎈'); // Balloons
+            }
+            // Show the final message after a short delay
+            setTimeout(() => {
+                document.getElementById('final-message').style.display = 'flex';
+            }, 2000); // 2 seconds after balloons start
+        }
+
+        function createFlyingElement(emoji) {
+            const el = document.createElement('div');
+            el.className = 'flying-element';
+            el.innerText = emoji;
+            el.style.left = Math.random() * 100 + 'vw';
+            el.style.animationDelay = Math.random() * 2 + 's'; // Random delay
+            document.body.appendChild(el);
+            setTimeout(() => el.remove(), 5000); // Remove after animation
+        }
+    </script>
+</body>
+</html>
